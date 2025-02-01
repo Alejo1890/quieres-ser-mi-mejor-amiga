@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Quieres ser mi mejor amiga?</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('https://img.freepik.com/vector-gratis/fondo-celebracion-dia-san-valentin-dibujado-mano_23-2150038762.jpg'); /* Fondo de San Valentín */
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+        }
+        h1 {
+            color: #e74c3c;
+            font-size: 36px;
+        }
+        p {
+            font-size: 18px;
+            color: #333;
+        }
+        .heart {
+            font-size: 50px;
+            color: #e74c3c;
+        }
+        .response-message {
+            font-size: 25px;
+            color: #2c3e50;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .anime-image {
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        button {
+            background-color: #e74c3c;
+            color: white;
+            font-size: 18px;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background-color: #c0392b;
+        }
+        button.grow {
+            transform: scale(1.3); /* Aumenta el tamaño del botón cada vez que se hace clic en "No" */
+        }
+        button.disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
+        }
+        #initial-question {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Mensaje inicial -->
+        <h1>¿Quieres ser mi mejor amiga?</h1>
+        <p id="initial-question">Desde que te conocí, me he dado cuenta de lo increíble que eres. Me gustaría mucho que nuestra amistad sea aún más fuerte y cercana. ❤️</p>
+        <p id="initial-question"><span class="heart">❤️</span> ¿Qué dices?</p>
+
+        <!-- GIF inicial -->
+        <img class="anime-image" src="https://i.gifer.com/RlJU.gif" alt="Anime GIF Pregunta" id="anime-gif">
+
+        <!-- Mensaje de respuesta, se mueve hacia arriba -->
+        <div id="respuesta" class="response-message"></div>
+
+        <!-- Botones -->
+        <div class="buttons">
+            <button onclick="respuesta('si')" id="si-btn">Sí</button>
+            <button onclick="respuesta('no')" id="no-btn">No</button>
+        </div>
+    </div>
+
+    <script>
+        let intentos = 0;
+        let maxIntentos = 30;
+
+        // Definimos los GIFs que se reutilizarán
+        const gifs = [
+            "https://images.gr-assets.com/hostedimages/1604779980ra/30348890.gif",
+            "https://steamuserimages-a.akamaihd.net/ugc/170408850322942779/1044EB4CCC02599FF85415970F12AC4BC24EF577/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
+            "https://usagif.com/wp-content/uploads/anime-love-62.gif",
+            "https://image.myanimelist.net/ui/cd3zCvFIwXaRE_yplX5DBuiy9-45P_3GegDf0uevRzQUCnV4gWg8aAJ48AGUWFQdxK8aVcXn8ecA7wEUYQc_zPPrGKqtLmkAgylcPRKq2LQSAs6xcqRCq8aQsujCidT4",
+            "https://www.gratistodo.com/wp-content/uploads/2021/12/Anime-gifs-de-Amor-2.gif",
+            "https://gifdb.com/images/high/anime-love-noragami-couple-eo3q293pwjh01tq8.gif",
+            "https://media2.giphy.com/media/QGc8RgRvMonFm/giphy.gif?cid=6c09b952c5lxgr5jm5mahfb5vgi3vebeayqpwp5jp2t5sraq&ep=v1_gifs_search&rid=giphy.gif&ct=g",
+            "https://64.media.tumblr.com/110dbddfd3d662479c214cacb754995d/tumblr_p93qh7l8Ly1xsimm1o1_500.gif"
+        ];
+
+        // Definimos los mensajes únicos para cada "No"
+        const mensajes = [
+            "¡Por favor, di que sí! No te arrepentirás de lo que podemos vivir juntos 😔",
+            "¡No me dejes en espera, soy lo que necesitas! 🥺",
+            "¡Este es el momento de arriesgarse! ¡Dime que sí! 💕",
+            "Confía en mí, lo nuestro puede ser maravilloso 💖",
+            "¡No dejes que esta oportunidad se escape! ¡Ven, di que sí! 😢",
+            "Sé que en el fondo me quieres, solo di que sí 😭",
+            "¡No me hagas sufrir! ¡Quiero que digas que sí! 😔",
+            "¿Por qué no me das la oportunidad de hacerte feliz? 🥺",
+            "¡Ya basta, di que sí y haré todo lo posible para ser perfecto para ti! 💫",
+            "¡Estoy aquí esperándote, no me dejes en espera! 😥",
+            "¡Solo quiero que digas sí! ¡No será tan malo! 🥲",
+            "Te prometo que te haré sonreír todos los días si me das una oportunidad 😢",
+            "¡Di que sí y juntos haremos algo increíble! 💖",
+            "¡No tienes nada que perder, solo ganarás mi amor! 😓",
+            "Solo quiero verte feliz, ¡hazlo por nosotros! 🥺",
+            "¡Sé que en el fondo quieres decir que sí! 💘",
+            "¡No dejes que el miedo te detenga, solo di que sí! 😩",
+            "¡No me hagas esperar tanto, por favor! 😢",
+            "Si no dices que sí, me sentiré devastado... 😓",
+            "¡Te prometo que no te arrepentirás de darme una oportunidad! 😞",
+            "No te puedo prometer que todo será perfecto, pero sí puedo prometerte que lo intentaremos juntos 💕",
+            "¡Esto no se trata solo de mí, se trata de nosotros! 💖",
+            "¡No dejes que el miedo te gane! ¡Dime que sí! 😟",
+            "¡Sé que lo que sentimos puede ser increíble! ¡Hazlo por nosotros! 💘",
+            "¡No puedo esperar más, quiero que seas parte de mi vida! 😢",
+            "Por favor, no me dejes esperando, sé que me dirás que sí... ¡Hazlo! 💓",
+            "¡Ya basta de dudas, di que sí y todo será mejor! 💌",
+            "¡Te haré la persona más feliz del mundo, solo di que sí! 💖",
+            "¡Dime que sí, y este será el comienzo de algo hermoso! 😔",
+            "¡Por favor, di que sí, lo nuestro puede ser mágico! 💘",
+            "Te prometo que mi amor por ti será infinito, solo di que sí! 💫"
+        ];
+
+        function respuesta(respuesta) {
+            const mensaje = document.getElementById("respuesta");
+            const gif = document.getElementById("anime-gif");
+            const botonSi = document.getElementById("si-btn"); // Botón Sí
+            const botonNo = document.getElementById("no-btn"); // Botón No
+            const initialQuestion = document.getElementById("initial-question");
+
+            // Solo ocultamos el mensaje inicial después del primer "No"
+            if (intentos > 0) {
+                initialQuestion.style.display = "none";
+            }
+
+            if (respuesta === 'si') {
+                mensaje.innerHTML = "¡Sabía que dirías que sí! ❤️";
+                mensaje.style.color = "green";
+                gif.src = "https://www.gratistodo.com/wp-content/uploads/2021/12/Anime-gifs-de-Amor-3.gif"; // GIF cuando dice "Sí"
+                document.querySelectorAll("button").forEach(button => button.style.display = "none");
+            } else if (respuesta === 'no' && intentos < maxIntentos) {
+                intentos++;
+                // El botón "No" se habilita después de cada intento
+                botonNo.classList.remove("disabled");
+
+                // Cambiar mensaje y GIF en función de los intentos
+                const index = intentos % gifs.length; // Cambia de GIF y mensaje
+                mensaje.innerHTML = mensajes[intentos % mensajes.length];
+                gif.src = gifs[index];
+
+                // Aumentar tamaño del botón "Sí"
+                botonSi.style.transform = `scale(${1 + intentos * 0.05})`; // Incrementa el tamaño del botón "Sí" cada vez que "No" es presionado
+
+                // Si llegamos al intento 30, ocultamos el botón "No" y solo mostramos el botón "Sí"
+                if (intentos >= maxIntentos) {
+                    botonNo.style.display = "none"; // Ocultar el botón "No"
+                }
+            }
+        }
+    </script>
+</body>
+</html>
